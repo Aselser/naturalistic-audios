@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on agosto 16, 2024, at 10:22
+    on agosto 19, 2024, at 23:45
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -35,6 +35,19 @@ from psychopy.hardware import keyboard
 
 # Run 'Before Experiment' code from code
 from audioRecorder import AudioRecorder 
+import serial.tools.list_ports
+
+def list_serial_ports():
+    ports = serial.tools.list_ports.comports()
+    arduino_ports = []
+
+    for port in ports:
+        # You can add more checks here based on the specific attributes of your Arduino
+        if 'Arduino' in port.description or 'CH340' in port.description:
+            arduino_ports.append(port.device)
+
+    return arduino_ports[0]
+
 # --- Setup global variables (available in all functions) ---
 # Ensure that relative paths start from the same directory as this script
 _thisDir = os.path.dirname(os.path.abspath(__file__))
@@ -46,7 +59,6 @@ expInfo = {
     'Edad': '',
     'Laterialidad': ['Derecha', 'Izquierda', ''],
     'Vuelta': ['Motor/NoMotor1','Motor/NoMotor2','Social/NoSocial1','Social/NoSocial2'],
-    'COM': list(range(1,25)),
     'date': data.getDateStr(),  # add a simple timestamp
     'expName': expName,
     'psychopyVersion': psychopyVersion,
@@ -112,7 +124,7 @@ def setupData(expInfo, dataDir=None):
     thisExp = data.ExperimentHandler(
         name=expName, version='',
         extraInfo=expInfo, runtimeInfo=None,
-        originPath='C:\\Users\\agust\\OneDrive\\Desktop\\CNC\\Paradigmas\\Python\\MotorNoMotor\\paradigma_lastrun.py',
+        originPath='C:\\Users\\agust\\OneDrive\\Desktop\\CNC\\Paradigmas\\Python\\naturalistic-audios\\paradigma_lastrun.py',
         savePickle=True, saveWideText=False,
         dataFileName=dataDir + os.sep + filename, sortColumns='time'
     )
@@ -321,7 +333,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         depth=0.0);
     comenzar_resp = keyboard.Keyboard()
     # Run 'Begin Experiment' code from code
-    puerto = 'COM' + expInfo['COM']
+    puerto = list_serial_ports()
     recorder = AudioRecorder(mic_id = 0, sample_rate = 48000, channels = 1, arduino_port = puerto)
     
     audios_dict ={
@@ -346,7 +358,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         pos=(0, 0), height=0.05, wrapWidth=None, ori=0.0, 
         color='white', colorSpace='rgb', opacity=None, 
         languageStyle='LTR',
-        depth=0.0);
+        depth=-1.0);
     key_resp = keyboard.Keyboard()
     
     # --- Initialize components for Routine "recording" ---
@@ -382,7 +394,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         pos=(0, 0), height=0.05, wrapWidth=None, ori=0.0, 
         color='white', colorSpace='rgb', opacity=None, 
         languageStyle='LTR',
-        depth=0.0);
+        depth=-1.0);
     key_resp = keyboard.Keyboard()
     
     # --- Initialize components for Routine "recording_2" ---
@@ -601,8 +613,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
     thisExp.addData('audio.stopped', globalClock.getTime())
-    # Run 'End Routine' code from arduino_pulse
-    recorder._send_pulse_to_arduino()
     audio1.pause()  # ensure sound has stopped at end of Routine
     # the Routine "audio" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
@@ -611,6 +621,8 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     continueRoutine = True
     # update component parameters for each repeat
     thisExp.addData('minute.started', globalClock.getTime())
+    # Run 'Begin Routine' code from code_5
+    recorder._send_pulse_to_arduino()
     key_resp.keys = []
     key_resp.rt = []
     _key_resp_allKeys = []
@@ -1045,8 +1057,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
     thisExp.addData('audio2.stopped', globalClock.getTime())
-    # Run 'End Routine' code from arduiono_pulse2
-    recorder._send_pulse_to_arduino()
     sound_2.pause()  # ensure sound has stopped at end of Routine
     # the Routine "audio2" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
@@ -1055,6 +1065,8 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     continueRoutine = True
     # update component parameters for each repeat
     thisExp.addData('minute.started', globalClock.getTime())
+    # Run 'Begin Routine' code from code_5
+    recorder._send_pulse_to_arduino()
     key_resp.keys = []
     key_resp.rt = []
     _key_resp_allKeys = []
